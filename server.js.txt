@@ -1,0 +1,45 @@
+const express = require('express');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+const bancoDeAgendamentos = [];
+
+app.post('/api/agendar', (req, res) => {
+    const { nome, servico, data, hora } = req.body;
+
+    // 1. A TRAVA: O servidor procura se já existe alguém nesse dia e hora
+    const horarioOcupado = bancoDeAgendamentos.find(agendamento => agendamento.data === data && agendamento.hora === hora);
+
+    // 2. SE ESTIVER OCUPADO: Bloqueia e avisa o cliente
+    if (horarioOcupado) {
+        console.log(`\n⚠️ TENTATIVA BLOQUEADA: ${nome} tentou agendar dia ${data} às ${hora}, mas já estava ocupado!`);
+        return res.status(400).json({ 
+            mensagem: `Poxa, ${nome}. Esse horário das ${hora} já está reservado para outro cliente. Por favor, escolha outro horário!` 
+        });
+    }
+
+    // 3. SE ESTIVER LIVRE: Salva o agendamento normalmente
+    const novoAgendamento = { id: Date.now(), nome, servico, data, hora };
+    bancoDeAgendamentos.push(novoAgendamento);
+
+    console.log('\n==================================');
+    console.log('✂️ NOVO HORÁRIO AGENDADO NA HEXE!');
+    console.log(`Cliente: ${nome}`);
+    console.log(`Serviço: ${servico}`);
+    console.log(`Data e Hora: ${data.split('-').reverse().join('/')} às ${hora}`);
+    console.log('==================================\n');
+
+    res.status(201).json({ 
+        mensagem: `Tudo certo, ${nome}! Seu horário na Hexe Barbearia foi confirmado para o dia ${data.split('-').reverse().join('/')} às ${hora}.` 
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(`\n🚀 Sistema da Hexe Barbearia está ONLINE e com bloqueio de horários ativado!`);
+    console.log(`👉 Abra seu navegador e acesse: http://localhost:${PORT}`);
+});});
