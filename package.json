@@ -4,7 +4,8 @@
   "description": "Sistema Hexe Barbearia",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "npm rebuild sqlite3"
   },
   "dependencies": {
     "express": "^5.2.1",
