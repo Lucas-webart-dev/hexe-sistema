@@ -4,7 +4,7 @@ const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // ISSO AQUI É O QUE FAZ FICAR ONLINE[cite: 6]
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
