@@ -1,7 +1,6 @@
 {
   "name": "hexe-sistema",
   "version": "1.0.0",
-  "description": "Sistema Hexe Barbearia",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
